@@ -35,6 +35,7 @@
         "composer/package-versions-deprecated": "^1.10.99",
         "laminas/laminas-component-installer": "^2.1.2",
         "laminas/laminas-config-aggregator": "^1.2",
+        "laminas/laminas-db": "^2.11",
         "laminas/laminas-diactoros": "^2.3.0",
         "laminas/laminas-servicemanager": "^3.4",
         "laminas/laminas-stdlib": "^3.2.1",
