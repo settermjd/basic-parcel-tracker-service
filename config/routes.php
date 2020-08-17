@@ -37,6 +37,6 @@ use App\Handler\{HomePageHandler, PingHandler};
  * @param ContainerInterface $container
  */
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
-    $app->get('/parcel/v1/{parcel_id:\d+}', HomePageHandler::class, 'home');
+    $app->get('/parcel/v1/{parcel_id:[0-9A-Z]+}', HomePageHandler::class, 'home');
     $app->get('/api/ping', PingHandler::class, 'api.ping');
 };
