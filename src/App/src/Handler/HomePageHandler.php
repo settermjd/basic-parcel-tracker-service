@@ -16,6 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class HomePageHandler implements RequestHandlerInterface
 {
+    private const DATA_FILE_DIR = __DIR__ . '/../../../../data/';
+
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
     private $parcelTrackingDataFileDirectory;
@@ -27,7 +29,7 @@ class HomePageHandler implements RequestHandlerInterface
     public function __construct(Router\RouterInterface $router)
     {
         $this->router = $router;
-        $this->parcelTrackingDataFileDirectory = __DIR__ . '/../../../../data/parcel_tracking_files';
+        $this->parcelTrackingDataFileDirectory = self::DATA_FILE_DIR . 'parcel_tracking_files';
     }
 
     /**
