@@ -46,7 +46,7 @@ class HomePageHandler implements RequestHandlerInterface
             return new JsonResponse([], 404);
         }
 
-        if ($this->parcelTrackingFileExists($parcelTrackingNumber, $parcelTrackingFile)) {
+        if ($this->parcelTrackingFileExists($parcelTrackingFile)) {
             return new JsonResponse(
                 json_decode(
                     file_get_contents($parcelTrackingFile)
@@ -78,12 +78,11 @@ class HomePageHandler implements RequestHandlerInterface
     }
 
     /**
-     * @param string $parcelTrackingNumber
      * @param string $parcelTrackingFile
      * @return bool
      */
-    private function parcelTrackingFileExists(string $parcelTrackingNumber, string $parcelTrackingFile): bool
+    private function parcelTrackingFileExists(string $parcelTrackingFile): bool
     {
-        return !is_null($parcelTrackingNumber) && file_exists($parcelTrackingFile);
+        return file_exists($parcelTrackingFile);
     }
 }
