@@ -34,14 +34,15 @@ class HomePageHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $dir = __DIR__ . '/../../../../data/results';
-        $pid = $request->getAttribute('parcel_id');
+        $parcelTrackingDataFileDirectory = __DIR__ . '/../../../../data/parcel_tracking_files';
 
-        if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
+        if (!is_null($request->getAttribute('parcel_id'))
+            && file_exists(sprintf('%s/%s.json', $parcelTrackingDataFileDirectory, $request->getAttribute('parcel_id')))
+        ) {
             return new JsonResponse(
                 json_decode(
                     file_get_contents(
-                        sprintf('%s/%s.json', $dir, $pid)
+                        sprintf('%s/%s.json', $parcelTrackingDataFileDirectory, $request->getAttribute('parcel_id'))
                     )
                 )
             );
