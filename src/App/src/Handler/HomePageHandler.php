@@ -38,13 +38,15 @@ class HomePageHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $parcelTrackingNumber = $request->getAttribute('parcel_id');
+
         $parcelTrackingFile = sprintf(
             '%s/%s.json',
             $this->parcelTrackingDataFileDirectory,
-            $request->getAttribute('parcel_id')
+            $parcelTrackingNumber
         );
 
-        if (!is_null($request->getAttribute('parcel_id')) && file_exists($parcelTrackingFile)) {
+        if (!is_null($parcelTrackingNumber) && file_exists($parcelTrackingFile)) {
             return new JsonResponse(
                 json_decode(
                     file_get_contents($parcelTrackingFile)
