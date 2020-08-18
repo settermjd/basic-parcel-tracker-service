@@ -16,10 +16,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class HomePageHandler implements RequestHandlerInterface
 {
-    private const PARCEL_TRACKING_FILE_DIRECTORY = __DIR__ . '/../../../../data/parcel_tracking_files';
-
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
+    private $parcelTrackingDataFileDirectory;
 
     /**
      * HomePageHandler constructor.
@@ -28,6 +27,7 @@ class HomePageHandler implements RequestHandlerInterface
     public function __construct(Router\RouterInterface $router)
     {
         $this->router = $router;
+        $this->parcelTrackingDataFileDirectory = __DIR__ . '/../../../../data/parcel_tracking_files';
     }
 
     /**
@@ -37,12 +37,12 @@ class HomePageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if (!is_null($request->getAttribute('parcel_id'))
-            && file_exists(sprintf('%s/%s.json', self::PARCEL_TRACKING_FILE_DIRECTORY, $request->getAttribute('parcel_id')))
+            && file_exists(sprintf('%s/%s.json', $this->parcelTrackingDataFileDirectory, $request->getAttribute('parcel_id')))
         ) {
             return new JsonResponse(
                 json_decode(
                     file_get_contents(
-                        sprintf('%s/%s.json', self::PARCEL_TRACKING_FILE_DIRECTORY, $request->getAttribute('parcel_id'))
+                        sprintf('%s/%s.json', $this->parcelTrackingDataFileDirectory, $request->getAttribute('parcel_id'))
                     )
                 )
             );
