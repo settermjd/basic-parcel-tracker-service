@@ -39,14 +39,9 @@ class HomePageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $parcelTrackingNumber = $request->getAttribute('parcel_id');
+        $parcelTrackingFile = $this->getParcelTrackingFile($parcelTrackingNumber);
 
-        $parcelTrackingFile = sprintf(
-            '%s/%s.json',
-            $this->parcelTrackingDataFileDirectory,
-            $parcelTrackingNumber
-        );
-
-        if (!is_null($parcelTrackingNumber) && file_exists($parcelTrackingFile)) {
+        if ($this->parcelTrackingFileExists($parcelTrackingNumber, $parcelTrackingFile)) {
             return new JsonResponse(
                 json_decode(
                     file_get_contents($parcelTrackingFile)
@@ -55,5 +50,30 @@ class HomePageHandler implements RequestHandlerInterface
         }
 
         return new JsonResponse([]);
+    }
+
+    /**
+     * @param string $parcelTrackingNumber
+     * @return string
+     */
+    private function getParcelTrackingFile(string $parcelTrackingNumber): string
+    {
+        $parcelTrackingFile = sprintf(
+            '%s/%s.json',
+            $this->parcelTrackingDataFileDirectory,
+            $parcelTrackingNumber
+        );
+
+        return $parcelTrackingFile;
+    }
+
+    /**
+     * @param string $parcelTrackingNumber
+     * @param string $parcelTrackingFile
+     * @return bool
+     */
+    private function parcelTrackingFileExists(string $parcelTrackingNumber, string $parcelTrackingFile): bool
+    {
+        return !is_null($parcelTrackingNumber) && file_exists($parcelTrackingFile);
     }
 }
