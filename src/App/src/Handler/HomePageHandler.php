@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handler;
 
+use App\Service\ParcelTrackingService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Exception\InvalidArgumentException;
 use Mezzio\Router;
@@ -17,20 +18,21 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class HomePageHandler implements RequestHandlerInterface
 {
-    private const DATA_FILE_DIR = __DIR__ . '/../../../../data/';
-
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
-    private $parcelTrackingDataFileDirectory;
+
+    /** @var ParcelTrackingService */
+    private ParcelTrackingService $parcelService;
 
     /**
      * HomePageHandler constructor.
      * @param Router\RouterInterface $router
+     * @param ParcelTrackingService $parcelTrackingService
      */
-    public function __construct(Router\RouterInterface $router)
+    public function __construct(Router\RouterInterface $router, ParcelTrackingService $parcelTrackingService)
     {
         $this->router = $router;
-        $this->parcelTrackingDataFileDirectory = self::DATA_FILE_DIR . 'parcel_tracking_files';
+        $this->parcelService = $parcelTrackingService;
     }
 
     /**
@@ -39,57 +41,16 @@ class HomePageHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $parcelTrackingNumber = $request->getAttribute('parcel_id');
         try {
-            $parcelTrackingFile = $this->getParcelTrackingFile($parcelTrackingNumber);
+            $parcelTrackingFile = $this->parcelService->getTrackingFile($request->getAttribute('parcel_id'));
         } catch (InvalidArgumentException $e) {
             return new JsonResponse([], 404);
         }
 
-        if ($this->parcelTrackingFileExists($parcelTrackingFile)) {
-            return new JsonResponse($this->getParcelData($parcelTrackingFile));
+        if ($this->parcelService->hasTrackingFile($parcelTrackingFile)) {
+            return new JsonResponse($this->parcelService->getParcelData($parcelTrackingFile));
         }
 
-        return new JsonResponse([]);
-    }
-
-    /**
-     * @param string $parcelTrackingNumber
-     * @throws InvalidArgumentException
-     * @return string
-     */
-    private function getParcelTrackingFile(string $parcelTrackingNumber): string
-    {
-        $parcelTrackingFile = sprintf(
-            '%s/%s.json',
-            $this->parcelTrackingDataFileDirectory,
-            $parcelTrackingNumber
-        );
-
-        if (! file_exists($parcelTrackingFile)) {
-            throw new InvalidArgumentException('Parcel tracking file does not exist');
-        }
-
-        return $parcelTrackingFile;
-    }
-
-    /**
-     * @param string $parcelTrackingFile
-     * @return bool
-     */
-    private function parcelTrackingFileExists(string $parcelTrackingFile): bool
-    {
-        return file_exists($parcelTrackingFile);
-    }
-
-    /**
-     * @param string $parcelTrackingFile
-     * @return mixed
-     */
-    private function getParcelData(string $parcelTrackingFile): mixed
-    {
-        return json_decode(
-            file_get_contents($parcelTrackingFile)
-        );
+        return new JsonResponse([], 500);
     }
 }

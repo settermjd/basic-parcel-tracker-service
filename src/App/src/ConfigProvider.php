@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Service\ParcelTrackingService;
+
 /**
  * The configuration provider for the App module
  *
@@ -33,6 +35,7 @@ class ConfigProvider
         return [
             'invokables' => [
                 Handler\PingHandler::class => Handler\PingHandler::class,
+                ParcelTrackingService::class => ParcelTrackingService::class,
             ],
             'factories'  => [
                 Handler\HomePageHandler::class => Handler\HomePageHandlerFactory::class,
