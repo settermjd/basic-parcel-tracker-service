@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Handler;
 
 use Laminas\Diactoros\Response\JsonResponse;
+use Mezzio\Exception\InvalidArgumentException;
 use Mezzio\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,7 +40,11 @@ class HomePageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $parcelTrackingNumber = $request->getAttribute('parcel_id');
-        $parcelTrackingFile = $this->getParcelTrackingFile($parcelTrackingNumber);
+        try {
+            $parcelTrackingFile = $this->getParcelTrackingFile($parcelTrackingNumber);
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse([], 404);
+        }
 
         if ($this->parcelTrackingFileExists($parcelTrackingNumber, $parcelTrackingFile)) {
             return new JsonResponse(
@@ -54,6 +59,7 @@ class HomePageHandler implements RequestHandlerInterface
 
     /**
      * @param string $parcelTrackingNumber
+     * @throws InvalidArgumentException
      * @return string
      */
     private function getParcelTrackingFile(string $parcelTrackingNumber): string
@@ -63,6 +69,10 @@ class HomePageHandler implements RequestHandlerInterface
             $this->parcelTrackingDataFileDirectory,
             $parcelTrackingNumber
         );
+
+        if (! file_exists($parcelTrackingFile)) {
+            throw new InvalidArgumentException('Parcel tracking file does not exist');
+        }
 
         return $parcelTrackingFile;
     }
