@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Service\FileParcelTrackingService;
 use App\Service\ParcelTrackingService;
 
 /**
@@ -33,9 +34,12 @@ class ConfigProvider
     public function getDependencies() : array
     {
         return [
+            'aliases' => [
+                ParcelTrackingService::class => FileParcelTrackingService::class,
+            ],
             'invokables' => [
                 Handler\PingHandler::class => Handler\PingHandler::class,
-                ParcelTrackingService::class => ParcelTrackingService::class,
+                FileParcelTrackingService::class => FileParcelTrackingService::class,
             ],
             'factories'  => [
                 Handler\HomePageHandler::class => Handler\HomePageHandlerFactory::class,

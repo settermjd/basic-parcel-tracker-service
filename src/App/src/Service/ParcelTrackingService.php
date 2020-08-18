@@ -9,53 +9,24 @@ use Mezzio\Exception\InvalidArgumentException;
  * Class ParcelTrackingService
  * @package App\Service
  */
-class ParcelTrackingService
+interface ParcelTrackingService
 {
-    private const DATA_FILE_DIR = __DIR__ . '/../../../../data/';
-
-    /** @var string */
-    private string $parcelTrackingDataFileDirectory;
-
-    public function __construct()
-    {
-        $this->parcelTrackingDataFileDirectory = self::DATA_FILE_DIR . 'parcel_tracking_files';
-    }
-
     /**
      * @param string $parcelTrackingFile
      * @return mixed
      */
-    public function getParcelData(string $parcelTrackingFile)
-    {
-        return json_decode(file_get_contents($parcelTrackingFile));
-    }
+    public function getParcelData(string $parcelTrackingFile);
 
     /**
      * @param string $parcelTrackingNumber
      * @return string
      * @throws InvalidArgumentException
      */
-    public function getTrackingFile(string $parcelTrackingNumber): string
-    {
-        $parcelTrackingFile = sprintf(
-            '%s/%s.json',
-            $this->parcelTrackingDataFileDirectory,
-            $parcelTrackingNumber
-        );
-
-        if (!file_exists($parcelTrackingFile)) {
-            throw new InvalidArgumentException('Parcel tracking file does not exist');
-        }
-
-        return $parcelTrackingFile;
-    }
+    public function getTrackingFile(string $parcelTrackingNumber): string;
 
     /**
      * @param string $parcelTrackingFile
      * @return bool
      */
-    public function hasTrackingFile(string $parcelTrackingFile): bool
-    {
-        return file_exists($parcelTrackingFile);
-    }
+    public function hasTrackingFile(string $parcelTrackingFile): bool;
 }

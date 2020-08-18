@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handler;
 
+use App\Service\FileParcelTrackingService;
 use App\Service\ParcelTrackingService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Exception\InvalidArgumentException;
