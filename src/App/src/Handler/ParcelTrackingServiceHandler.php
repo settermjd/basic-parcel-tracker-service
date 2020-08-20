@@ -16,6 +16,17 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ParcelTrackingServiceHandler implements RequestHandlerInterface
 {
+    /**
+     * Regex to determine a valid parcel id
+     *
+     * A valid parcel id must follow the format:
+     *     TN + 9 digits + 2 character country code (ISO 3166-1 alpha-2)
+     * An example code matching that format is: TN100036127AU
+     *
+     * @see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+     */
+    private const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
+
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
 
@@ -98,6 +109,6 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      */
     private function isValidParcelTrackingNumber($pid): bool
     {
-        return !is_null($pid) && !preg_match('/TN\d{9}[A-Z]{2}/', $pid);
+        return preg_match(self::VALID_PARCEL_ID, $pid);
     }
 }
