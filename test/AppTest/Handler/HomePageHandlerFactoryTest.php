@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AppTest\Handler;
 
-use App\Handler\HomePageHandler;
-use App\Handler\HomePageHandlerFactory;
+use App\Handler\ParcelTrackingServiceHandler;
+use App\Handler\ParcelTrackingServiceHandlerFactory;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
@@ -27,14 +27,14 @@ class HomePageHandlerFactoryTest extends TestCase
 
     public function testFactoryWithoutTemplate()
     {
-        $factory = new HomePageHandlerFactory();
+        $factory = new ParcelTrackingServiceHandlerFactory();
         $this->container->has(TemplateRendererInterface::class)->willReturn(false);
 
-        $this->assertInstanceOf(HomePageHandlerFactory::class, $factory);
+        $this->assertInstanceOf(ParcelTrackingServiceHandlerFactory::class, $factory);
 
         $homePage = $factory($this->container->reveal());
 
-        $this->assertInstanceOf(HomePageHandler::class, $homePage);
+        $this->assertInstanceOf(ParcelTrackingServiceHandler::class, $homePage);
     }
 
     public function testFactoryWithTemplate()
@@ -44,10 +44,10 @@ class HomePageHandlerFactoryTest extends TestCase
             ->get(TemplateRendererInterface::class)
             ->willReturn($this->prophesize(TemplateRendererInterface::class));
 
-        $factory = new HomePageHandlerFactory();
+        $factory = new ParcelTrackingServiceHandlerFactory();
 
         $homePage = $factory($this->container->reveal());
 
-        $this->assertInstanceOf(HomePageHandler::class, $homePage);
+        $this->assertInstanceOf(ParcelTrackingServiceHandler::class, $homePage);
     }
 }

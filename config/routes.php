@@ -5,12 +5,12 @@ declare(strict_types=1);
 use Mezzio\Application;
 use Mezzio\MiddlewareFactory;
 use Psr\Container\ContainerInterface;
-use App\Handler\{HomePageHandler, PingHandler};
+use App\Handler\ParcelTrackingServiceHandler;
 
 /**
  * Setup routes with a single request method:
  *
- * $app->get('/', App\Handler\HomePageHandler::class, 'home');
+ * $app->get('/', App\Handler\ParcelTrackingServiceHandler::class, 'home');
  * $app->post('/album', App\Handler\AlbumCreateHandler::class, 'album.create');
  * $app->put('/album/:id', App\Handler\AlbumUpdateHandler::class, 'album.put');
  * $app->patch('/album/:id', App\Handler\AlbumUpdateHandler::class, 'album.patch');
@@ -37,6 +37,5 @@ use App\Handler\{HomePageHandler, PingHandler};
  * @param ContainerInterface $container
  */
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
-    $app->get('/parcel/v1/{parcel_id:[0-9A-Z]+}', HomePageHandler::class, 'home');
-    $app->get('/api/ping', PingHandler::class, 'api.ping');
+    // Some routes have been defined in App/ConfigProvider.php::getRouteConfig
 };

@@ -11,16 +11,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Class HomePageHandler
+ * Class ParcelTrackingServiceHandler
  * @package App\Handler
  */
-class HomePageHandler implements RequestHandlerInterface
+class ParcelTrackingServiceHandler implements RequestHandlerInterface
 {
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
 
     /**
-     * HomePageHandler constructor.
+     * ParcelTrackingServiceHandler constructor.
      * @param Router\RouterInterface $router
      */
     public function __construct(Router\RouterInterface $router)
@@ -36,33 +36,64 @@ class HomePageHandler implements RequestHandlerInterface
     {
         $dir = __DIR__ . '/../../../../data/results';
         $pid = $request->getAttribute('parcel_id');
+        $responseCode = 200;
 
         if (!is_null($pid)) {
-            if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
-                return new JsonResponse(
-                    json_decode(
-                        file_get_contents(
-                            sprintf('%s/%s.json', $dir, $pid)
-                        )
-                    )
-                );
+            if (preg_match('/TN\d{9}[A-Z]{2}/', $pid)) {
+                if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
+                    $responseData = $this->getParcelData($dir, $pid);
+                } else {
+                    $responseData = $this->getErrorResponseBody(500);
+                    $responseCode = 500;
+                }
             } else {
-                return new JsonResponse(
-                    [
-                        'api_response' => 400,
-                        'status' => 'Parcel Tracking Data is Not Available'
-                    ],
-                    400
-                );
+                $responseData = $this->getErrorResponseBody(400);
+                $responseCode = 400;
             }
         } else {
-            return new JsonResponse(
-                [
-                    'api_response' => 400,
-                    'status' => 'Missing Parcel Tracking Number'
-                ],
-                400
-            );
+            $responseData = $this->getErrorResponseBody(417);
+            $responseCode = 417;
         }
+
+        return new JsonResponse($responseData, $responseCode);
+    }
+
+    /**
+     * @return array
+     */
+    private function getErrorResponseBody($statusCode): array
+    {
+        switch ($statusCode) {
+            case 500:
+                $message = 'Parcel Tracking Data is Not Available';
+                break;
+            case 417:
+                $message = 'Missing Parcel Tracking Number';
+                break;
+            case 400:
+                $message = 'Invalid Parcel Tracking Number';
+                break;
+            default:
+                $message = 'Unknown Error';
+        }
+
+        return [
+            'api_response' => $statusCode,
+            'status' => $message
+        ];
+    }
+
+    /**
+     * @param string $dir
+     * @param string $pid
+     * @return string
+     */
+    private function getParcelData(string $dir, string $pid): string
+    {
+        return json_decode(
+            file_get_contents(
+                sprintf('%s/%s.json', $dir, $pid)
+            )
+        );
     }
 }

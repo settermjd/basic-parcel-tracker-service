@@ -11,12 +11,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use function get_class;
 
-class HomePageHandlerFactory
+class ParcelTrackingServiceHandlerFactory
 {
     public function __invoke(ContainerInterface $container) : RequestHandlerInterface
     {
         $router   = $container->get(RouterInterface::class);
 
-        return new HomePageHandler($router);
+        return new ParcelTrackingServiceHandler($router);
     }
 }
