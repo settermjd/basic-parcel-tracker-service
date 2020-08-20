@@ -38,17 +38,12 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
         $pid = $request->getAttribute('parcel_id');
         $responseCode = 200;
 
-        if (!is_null($pid)) {
-            if (preg_match('/TN\d{9}[A-Z]{2}/', $pid)) {
-                if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
-                    $responseData = $this->getParcelData($dir, $pid);
-                } else {
-                    $responseData = $this->getErrorResponseBody(500);
-                    $responseCode = 500;
-                }
+        if ($this->isValidParcelTrackingNumber($pid)) {
+            if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
+                $responseData = $this->getParcelData($dir, $pid);
             } else {
-                $responseData = $this->getErrorResponseBody(400);
-                $responseCode = 400;
+                $responseData = $this->getErrorResponseBody(500);
+                $responseCode = 500;
             }
         } else {
             $responseData = $this->getErrorResponseBody(417);
@@ -95,5 +90,14 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
                 sprintf('%s/%s.json', $dir, $pid)
             )
         );
+    }
+
+    /**
+     * @param $pid
+     * @return bool
+     */
+    private function isValidParcelTrackingNumber($pid): bool
+    {
+        return !is_null($pid) && !preg_match('/TN\d{9}[A-Z]{2}/', $pid);
     }
 }
