@@ -37,16 +37,32 @@ class HomePageHandler implements RequestHandlerInterface
         $dir = __DIR__ . '/../../../../data/results';
         $pid = $request->getAttribute('parcel_id');
 
-        if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
-            return new JsonResponse(
-                json_decode(
-                    file_get_contents(
-                        sprintf('%s/%s.json', $dir, $pid)
+        if (!is_null($pid)) {
+            if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
+                return new JsonResponse(
+                    json_decode(
+                        file_get_contents(
+                            sprintf('%s/%s.json', $dir, $pid)
+                        )
                     )
-                )
+                );
+            } else {
+                return new JsonResponse(
+                    [
+                        'api_response' => 400,
+                        'status' => 'Parcel Tracking Data is Not Available'
+                    ],
+                    400
+                );
+            }
+        } else {
+            return new JsonResponse(
+                [
+                    'api_response' => 400,
+                    'status' => 'Missing Parcel Tracking Number'
+                ],
+                400
             );
         }
-
-        return new JsonResponse([]);
     }
 }

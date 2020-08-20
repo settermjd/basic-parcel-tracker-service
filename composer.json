@@ -43,7 +43,8 @@
         "laminas/laminas-zendframework-bridge": "^1.0",
         "mezzio/mezzio": "^3.2.1",
         "mezzio/mezzio-fastroute": "^3.0.3",
-        "mezzio/mezzio-helpers": "^5.3"
+        "mezzio/mezzio-helpers": "^5.3",
+        "shrikeh/teapot": "^2.3"
     },
     "require-dev": {
         "codeception/codeception": "^4.1",
