@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -11,7 +12,7 @@ use Teapot\StatusCode\RFC\RFC7231 as HttpStatusCodes;
  */
 final class FileParcelTrackingService extends AbstractParcelTrackingService implements ParcelTrackingService
 {
-    public const DIR = __DIR__ . '/../../../../data/results';
+    private const DIR = __DIR__ . '/../../../../data/results';
 
     /**
      * @inheritdoc
@@ -49,7 +50,7 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
         } else {
             $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
             $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
-    }
+        }
 
         return [$responseData, $responseCode];
     }
@@ -64,7 +65,7 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
     private function getParcelTrackingFilename(string $dir, string $pid): string
     {
         return sprintf('%s/%s.json', $dir, $pid);
-        }
+    }
 
     /**
      * Determine, based on several criteria, if the identified parcel tracking file is accessible or not
