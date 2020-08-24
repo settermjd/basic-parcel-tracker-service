@@ -109,7 +109,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      */
     private function getParcelTrackingFileData(string $parcelFile, string $dir): array
     {
-        if (file_exists($parcelFile)) {
+        if ($this->parcelTrackingFileIsAccessible($parcelFile)) {
             $responseData = $this->getParcelData($dir);
             $responseCode = 200;
         } else {
@@ -121,5 +121,14 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
             $responseData,
             $responseCode
         ];
+    }
+
+    /**
+     * @param string $parcelFile
+     * @return bool
+     */
+    private function parcelTrackingFileIsAccessible(string $parcelFile): bool
+    {
+        return file_exists($parcelFile) && is_readable($parcelFile) && filesize($parcelFile);
     }
 }
