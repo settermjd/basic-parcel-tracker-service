@@ -20,13 +20,13 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
     public function getErrorResponseBody(int $statusCode): array
     {
         switch ($statusCode) {
-            case 500:
+            case HttpStatusCodes::INTERNAL_SERVER_ERROR:
                 $message = 'Parcel Tracking Data is Not Available';
                 break;
-            case 417:
+            case HttpStatusCodes::EXPECTATION_FAILED:
                 $message = 'Missing Parcel Tracking Number';
                 break;
-            case 400:
+            case HttpStatusCodes::BAD_REQUEST:
                 $message = 'Invalid Parcel Tracking Number';
                 break;
             default:
