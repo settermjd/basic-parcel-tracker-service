@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Handler\ParcelTrackingServiceHandler;
+use App\Handler\ParcelTrackingServiceHandlerFactory;
+use App\Middleware\Tideways\ServerTimingMiddleware;
 use App\Service\FileParcelTrackingService;
 use App\Service\ParcelTrackingService;
+use Mezzio\Application;
+use Mezzio\Container\ApplicationConfigInjectionDelegator;
 
 /**
  * The configuration provider for the App module
@@ -24,7 +29,8 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
-            'templates'    => $this->getTemplates(),
+            'routes' => $this->getRouteConfig(),
+            'templates' => $this->getTemplates(),
         ];
     }
 
@@ -37,13 +43,33 @@ class ConfigProvider
             'aliases' => [
                 ParcelTrackingService::class => FileParcelTrackingService::class,
             ],
-            'invokables' => [
-                Handler\PingHandler::class => Handler\PingHandler::class,
-                FileParcelTrackingService::class => FileParcelTrackingService::class,
-            ],
             'factories'  => [
-                Handler\HomePageHandler::class => Handler\HomePageHandlerFactory::class,
+                ParcelTrackingServiceHandler::class => ParcelTrackingServiceHandlerFactory::class,
             ],
+            'delegators' => [
+                Application::class => [
+                    ApplicationConfigInjectionDelegator::class,
+                ],
+            ],
+            'invokables' => [
+                ServerTimingMiddleware::class => ServerTimingMiddleware::class,
+                FileParcelTrackingService::class => FileParcelTrackingService::class,
+            ]
+        ];
+    }
+
+    /**
+     * Returns the module's routing table
+     */
+    public function getRouteConfig()
+    {
+        return [
+            [
+                'path' => '/parcel/v1/{parcel_tracking_number:TN\d{9}[A-Z]{2}}',
+                'middleware' => ParcelTrackingServiceHandler::class,
+                'allowed_methods' => ['GET'],
+                'name' => 'getParcelByTrackingNumber'
+            ]
         ];
     }
 

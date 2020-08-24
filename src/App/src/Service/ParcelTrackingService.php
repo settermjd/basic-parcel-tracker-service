@@ -3,30 +3,25 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Mezzio\Exception\InvalidArgumentException;
-
 /**
- * Class ParcelTrackingService
+ * Class FileParcelTrackingService
  * @package App\Service
  */
 interface ParcelTrackingService
 {
     /**
-     * @param string $parcelTrackingFile
-     * @return mixed
+     * Retrieve an error response body, based on the status code supplied
+     *
+     * @param int $statusCode
+     * @return array
      */
-    public function getParcelData(string $parcelTrackingFile);
+    public function getErrorResponseBody(int $statusCode): array;
 
     /**
-     * @param string $parcelTrackingNumber
-     * @return string
-     * @throws InvalidArgumentException
+     * Retrieve the parcel data, based on the parcel tracking number (id) supplied
+     *
+     * @param string $pid
+     * @return array
      */
-    public function getTrackingFile(string $parcelTrackingNumber): string;
-
-    /**
-     * @param string $parcelTrackingFile
-     * @return bool
-     */
-    public function hasTrackingFile(string $parcelTrackingFile): bool;
+    public function getParcelData(string $pid): array;
 }
