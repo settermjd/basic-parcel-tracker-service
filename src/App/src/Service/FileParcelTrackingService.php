@@ -51,40 +51,45 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
             $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
     }
 
+        return [$responseData, $responseCode];
+    }
+
     /**
+     * Retrieve the name of the parcel tracking file in the (local) filesystem
+     *
+     * @param string $dir
+     * @param string $pid
+     * @return string
+     */
+    private function getParcelTrackingFilename(string $dir, string $pid): string
+    {
+        return sprintf('%s/%s.json', $dir, $pid);
+        }
+
+    /**
+     * Determine, based on several criteria, if the identified parcel tracking file is accessible or not
+     *
      * @param string $parcelFile
      * @return bool
      */
-    public function parcelTrackingFileIsAccessible(string $parcelFile): bool
+    private function isParcelTrackingFileAccessible(string $parcelFile): bool
     {
         return file_exists($parcelFile) && is_readable($parcelFile) && filesize($parcelFile);
     }
 
     /**
-     * @param string $pid
-     * @return array
-     */
-    public function getParcelData(string $pid): array
-    {
-        if ($this->isValidParcelTrackingNumber($pid)) {
-            $parcelFile = $this->getParcelTrackingFile(self::DIR, $pid);
-            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, self::DIR);
-        } else {
-            $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
-            $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
-        }
-
-        return [$responseData, $responseCode];
-    }
-
-    /**
+     * Retrieve parcel data from the supplied tracking file
+     *
+     * The function returns a scalar array, composed of two elements:
+     *   - An array of parcel data
+     *   - An HTTP status code
+     *
      * @param string $parcelFile
-     * @param string $dir
      * @return array
      */
-    public function getParcelTrackingFileData(string $parcelFile, string $dir): array
+    private function getParcelTrackingFileData(string $parcelFile): array
     {
-        if ($this->parcelTrackingFileIsAccessible($parcelFile)) {
+        if ($this->isParcelTrackingFileAccessible($parcelFile)) {
             $responseData = json_decode(file_get_contents($parcelFile));
             $responseCode = HttpStatusCodes::OK;
         } else {
@@ -96,15 +101,5 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
             $responseData,
             $responseCode
         ];
-    }
-
-    /**
-     * @param string $dir
-     * @param string $pid
-     * @return string
-     */
-    private function getParcelTrackingFile(string $dir, string $pid): string
-    {
-        return sprintf('%s/%s.json', $dir, $pid);
     }
 }
