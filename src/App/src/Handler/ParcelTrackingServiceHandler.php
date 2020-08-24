@@ -49,13 +49,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
         $dir = __DIR__ . '/../../../../data/results';
         $pid = $request->getAttribute('parcel_id');
 
-        if ($this->isValidParcelTrackingNumber($pid)) {
-            $parcelFile = sprintf('%s/%s.json', $dir, $pid);
-            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, $dir);
-        } else {
-            $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
-            $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
-        }
+        list($responseData, $responseCode) = $this->getParcelTrackingData($pid, $dir);
 
         return new JsonResponse($responseData, $responseCode);
     }
@@ -131,5 +125,23 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     private function parcelTrackingFileIsAccessible(string $parcelFile): bool
     {
         return file_exists($parcelFile) && is_readable($parcelFile) && filesize($parcelFile);
+    }
+
+    /**
+     * @param string $pid
+     * @param string $dir
+     * @return array
+     */
+    private function getParcelTrackingData(string $pid, string $dir): array
+    {
+        if ($this->isValidParcelTrackingNumber($pid)) {
+            $parcelFile = sprintf('%s/%s.json', $dir, $pid);
+            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, $dir);
+        } else {
+            $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
+            $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
+        }
+
+        return [$responseData, $responseCode];
     }
 }
