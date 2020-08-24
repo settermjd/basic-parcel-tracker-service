@@ -57,7 +57,7 @@ class FileParcelTrackingService
      */
     public function isValidParcelTrackingNumber($pid): bool
     {
-        return preg_match(self::VALID_PARCEL_ID, $pid);
+        return preg_match(self::VALID_PARCEL_ID, $pid) === 1;
     }
 
     /**
