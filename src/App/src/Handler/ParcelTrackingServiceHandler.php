@@ -17,7 +17,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ParcelTrackingServiceHandler implements RequestHandlerInterface
 {
-
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
 
