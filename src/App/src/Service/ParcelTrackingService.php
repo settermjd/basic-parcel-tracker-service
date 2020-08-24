@@ -20,8 +20,8 @@ interface ParcelTrackingService
     /**
      * Retrieve the parcel data, based on the parcel tracking number (id) supplied
      *
-     * @param string $pid
+     * @param string $parcelTrackingNumber
      * @return array
      */
-    public function getParcelData(string $pid): array;
+    public function getParcelData(string $parcelTrackingNumber): array;
 }
