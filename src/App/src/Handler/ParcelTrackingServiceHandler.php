@@ -47,15 +47,10 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     {
         $dir = __DIR__ . '/../../../../data/results';
         $pid = $request->getAttribute('parcel_id');
-        $responseCode = 200;
 
         if ($this->isValidParcelTrackingNumber($pid)) {
-            if (file_exists(sprintf('%s/%s.json', $dir, $pid))) {
-                $responseData = $this->getParcelData($dir, $pid);
-            } else {
-                $responseData = $this->getErrorResponseBody(500);
-                $responseCode = 500;
-            }
+            $parcelFile = sprintf('%s/%s.json', $dir, $pid);
+            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, $dir);
         } else {
             $responseData = $this->getErrorResponseBody(417);
             $responseCode = 417;
@@ -90,17 +85,12 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     }
 
     /**
-     * @param string $dir
-     * @param string $pid
+     * @param string $parcelFile
      * @return string
      */
-    private function getParcelData(string $dir, string $pid): string
+    private function getParcelData(string $parcelFile): string
     {
-        return json_decode(
-            file_get_contents(
-                sprintf('%s/%s.json', $dir, $pid)
-            )
-        );
+        return json_decode(file_get_contents($parcelFile));
     }
 
     /**
@@ -110,5 +100,26 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     private function isValidParcelTrackingNumber($pid): bool
     {
         return preg_match(self::VALID_PARCEL_ID, $pid);
+    }
+
+    /**
+     * @param string $parcelFile
+     * @param string $dir
+     * @return array
+     */
+    private function getParcelTrackingFileData(string $parcelFile, string $dir): array
+    {
+        if (file_exists($parcelFile)) {
+            $responseData = $this->getParcelData($dir);
+            $responseCode = 200;
+        } else {
+            $responseData = $this->getErrorResponseBody(500);
+            $responseCode = 500;
+        }
+
+        return [
+            $responseData,
+            $responseCode
+        ];
     }
 }
