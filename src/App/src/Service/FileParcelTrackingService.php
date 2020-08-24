@@ -12,7 +12,7 @@ use Teapot\StatusCode\RFC\RFC7231 as HttpStatusCodes;
  */
 final class FileParcelTrackingService extends AbstractParcelTrackingService implements ParcelTrackingService
 {
-    private const DIR = __DIR__ . '/../../../../data/results';
+    private const PARCEL_TRACKING_FILE_DIRECTORY = __DIR__ . '/../../../../data/results';
 
     /**
      * @inheritdoc
