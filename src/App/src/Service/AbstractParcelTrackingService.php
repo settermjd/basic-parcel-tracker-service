@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+/**
+ * Class AbstractParcelTrackingService
+ * @package App\Service
+ */
 class AbstractParcelTrackingService implements ParcelTrackingServiceValidator
 {
     /**
