@@ -24,14 +24,6 @@ class FileParcelTrackingService
      */
     public const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
 
-    /**
-     * @param string $parcelFile
-     * @return string
-     */
-    public function getParcelData(string $parcelFile): string
-    {
-        return json_decode(file_get_contents($parcelFile));
-    }
 
     /**
      * @param int $statusCode
@@ -103,7 +95,7 @@ class FileParcelTrackingService
     public function getParcelTrackingFileData(string $parcelFile, string $dir): array
     {
         if ($this->parcelTrackingFileIsAccessible($parcelFile)) {
-            $responseData = $this->getParcelData($dir);
+            $responseData = json_decode(file_get_contents($parcelFile));
             $responseCode = HttpStatusCodes::OK;
         } else {
             $responseData = $this->getErrorResponseBody(HttpStatusCodes::INTERNAL_SERVER_ERROR);
