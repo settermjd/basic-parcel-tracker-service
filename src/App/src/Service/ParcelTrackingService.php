@@ -10,18 +10,16 @@ namespace App\Service;
 interface ParcelTrackingService
 {
     /**
+     * Retrieve an error response body, based on the status code supplied
+     *
      * @param int $statusCode
      * @return array
      */
     public function getErrorResponseBody(int $statusCode): array;
 
     /**
-     * @param $pid
-     * @return bool
-     */
-    public function isValidParcelTrackingNumber($pid): bool;
-
-    /**
+     * Retrieve the parcel data, based on the parcel tracking number (id) supplied
+     *
      * @param string $pid
      * @return array
      */

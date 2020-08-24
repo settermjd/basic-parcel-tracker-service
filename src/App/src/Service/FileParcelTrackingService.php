@@ -9,24 +9,12 @@ use Teapot\StatusCode\RFC\RFC7231 as HttpStatusCodes;
  * Class FileParcelTrackingService
  * @package App\Service
  */
-class FileParcelTrackingService implements ParcelTrackingService
+final class FileParcelTrackingService extends AbstractParcelTrackingService implements ParcelTrackingService
 {
     public const DIR = __DIR__ . '/../../../../data/results';
 
     /**
-     * Regex to determine a valid parcel id
-     *
-     * A valid parcel id must follow the format:
-     *     TN + 9 digits + 2 character country code (ISO 3166-1 alpha-2)
-     * An example code matching that format is: TN100036127AU
-     *
-     * @see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-     */
-    public const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
-
-    /**
-     * @param int $statusCode
-     * @return array
+     * @inheritdoc
      */
     public function getErrorResponseBody(int $statusCode): array
     {
@@ -51,12 +39,16 @@ class FileParcelTrackingService implements ParcelTrackingService
     }
 
     /**
-     * @param $pid
-     * @return bool
+     * @inheritdoc
      */
-    public function isValidParcelTrackingNumber($pid): bool
+    public function getParcelData(string $pid): array
     {
-        return preg_match(self::VALID_PARCEL_ID, $pid) === 1;
+        if ($this->isValidParcelTrackingNumber($pid)) {
+            $parcelFile = $this->getParcelTrackingFilename(self::DIR, $pid);
+            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile);
+        } else {
+            $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
+            $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
     }
 
     /**
