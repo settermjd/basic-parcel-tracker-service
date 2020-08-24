@@ -65,10 +65,10 @@ class ConfigProvider
     {
         return [
             [
-                'path' => '/parcel/v1/{parcel_id:[0-9A-Z]+}',
+                'path' => '/parcel/v1/{parcel_tracking_number:TN\d{9}[A-Z]{2}}',
                 'middleware' => ParcelTrackingServiceHandler::class,
                 'allowed_methods' => ['GET'],
-                'name' => 'getParcelById'
+                'name' => 'getParcelByTrackingNumber'
             ]
         ];
     }

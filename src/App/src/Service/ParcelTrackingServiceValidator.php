@@ -11,8 +11,8 @@ interface ParcelTrackingServiceValidator
     /**
      * Determines if the parcel tracking number supplied is a valid one or not
      *
-     * @param $pid
+     * @param string $parcelTrackingNumber
      * @return bool
      */
-    public function isValidParcelTrackingNumber($pid): bool;
+    public function isValidParcelTrackingNumber(string $parcelTrackingNumber): bool;
 }

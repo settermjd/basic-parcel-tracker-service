@@ -42,10 +42,10 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
     /**
      * @inheritdoc
      */
-    public function getParcelData(string $pid): array
+    public function getParcelData(string $parcelTrackingNumber): array
     {
-        if ($this->isValidParcelTrackingNumber($pid)) {
-            $parcelFile = $this->getParcelTrackingFilename(self::DIR, $pid);
+        if ($this->isValidParcelTrackingNumber($parcelTrackingNumber)) {
+            $parcelFile = $this->getParcelTrackingFilename($parcelTrackingNumber);
             list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile);
         } else {
             $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
@@ -58,13 +58,12 @@ final class FileParcelTrackingService extends AbstractParcelTrackingService impl
     /**
      * Retrieve the name of the parcel tracking file in the (local) filesystem
      *
-     * @param string $dir
-     * @param string $pid
+     * @param string $parcelTrackingNumber
      * @return string
      */
-    private function getParcelTrackingFilename(string $dir, string $pid): string
+    private function getParcelTrackingFilename(string $parcelTrackingNumber): string
     {
-        return sprintf('%s/%s.json', $dir, $pid);
+        return sprintf('%s/%s.json', self::PARCEL_TRACKING_FILE_DIRECTORY, $parcelTrackingNumber);
     }
 
     /**

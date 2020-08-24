@@ -15,13 +15,13 @@ class AbstractParcelTrackingService implements ParcelTrackingServiceValidator
      *
      * @see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
      */
-    protected const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
+    protected const VALID_PARCEL_TRACKING_NUMBER_REGEX = '/TN\d{9}[A-Z]{2}/';
 
     /**
      * @inheritdoc
      */
-    public function isValidParcelTrackingNumber($pid): bool
+    public function isValidParcelTrackingNumber(string $parcelTrackingNumber): bool
     {
-        return preg_match(FileParcelTrackingService::VALID_PARCEL_ID, $pid) === 1;
+        return preg_match(FileParcelTrackingService::VALID_PARCEL_TRACKING_NUMBER_REGEX, $parcelTrackingNumber) === 1;
     }
 }

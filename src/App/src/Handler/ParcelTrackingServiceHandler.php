@@ -42,8 +42,8 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $pid = $request->getAttribute('parcel_id');
-        list($responseData, $responseCode) = $this->parcelTrackingService->getParcelData($pid);
+        $parcelTrackingNumber = $request->getAttribute('parcel_tracking_number');
+        list($responseData, $responseCode) = $this->parcelTrackingService->getParcelData($parcelTrackingNumber);
 
         return new JsonResponse($responseData, $responseCode);
     }
