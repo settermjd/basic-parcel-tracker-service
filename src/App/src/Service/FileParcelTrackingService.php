@@ -9,7 +9,7 @@ use Teapot\StatusCode\RFC\RFC7231 as HttpStatusCodes;
  * Class FileParcelTrackingService
  * @package App\Service
  */
-class FileParcelTrackingService
+class FileParcelTrackingService implements ParcelTrackingService
 {
     public const DIR = __DIR__ . '/../../../../data/results';
 
@@ -23,7 +23,6 @@ class FileParcelTrackingService
      * @see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
      */
     public const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
-
 
     /**
      * @param int $statusCode
