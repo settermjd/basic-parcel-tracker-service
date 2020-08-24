@@ -71,14 +71,13 @@ class FileParcelTrackingService
 
     /**
      * @param string $pid
-     * @param string $dir
      * @return array
      */
-    public function getParcelTrackingData(string $pid, string $dir): array
+    public function getParcelData(string $pid): array
     {
         if ($this->isValidParcelTrackingNumber($pid)) {
-            $parcelFile = sprintf('%s/%s.json', $dir, $pid);
-            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, $dir);
+            $parcelFile = $this->getParcelTrackingFile(self::DIR, $pid);
+            list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, self::DIR);
         } else {
             $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
             $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
@@ -106,5 +105,15 @@ class FileParcelTrackingService
             $responseData,
             $responseCode
         ];
+    }
+
+    /**
+     * @param string $dir
+     * @param string $pid
+     * @return string
+     */
+    private function getParcelTrackingFile(string $dir, string $pid): string
+    {
+        return sprintf('%s/%s.json', $dir, $pid);
     }
 }
