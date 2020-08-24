@@ -7,6 +7,8 @@ namespace App;
 use App\Handler\ParcelTrackingServiceHandler;
 use App\Handler\ParcelTrackingServiceHandlerFactory;
 use App\Middleware\Tideways\ServerTimingMiddleware;
+use App\Service\FileParcelTrackingService;
+use App\Service\ParcelTrackingService;
 use Mezzio\Application;
 use Mezzio\Container\ApplicationConfigInjectionDelegator;
 
@@ -38,6 +40,9 @@ class ConfigProvider
     public function getDependencies() : array
     {
         return [
+            'aliases' => [
+                ParcelTrackingService::class => FileParcelTrackingService::class,
+            ],
             'factories'  => [
                 ParcelTrackingServiceHandler::class => ParcelTrackingServiceHandlerFactory::class,
             ],
@@ -48,6 +53,7 @@ class ConfigProvider
             ],
             'invokables' => [
                 ServerTimingMiddleware::class => ServerTimingMiddleware::class,
+                FileParcelTrackingService::class => FileParcelTrackingService::class,
             ]
         ];
     }

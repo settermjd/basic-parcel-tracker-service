@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handler;
 
-use App\Service\FileParcelTrackingService;
+use App\Service\ParcelTrackingService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Router;
 use Psr\Http\Message\ResponseInterface;
@@ -20,17 +20,21 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
 
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
-    /** @var FileParcelTrackingService */
-    private $fileParcelTrackingService;
+
+    /**
+     * @var ParcelTrackingService
+     */
+    private ParcelTrackingService $parcelTrackingService;
 
     /**
      * ParcelTrackingServiceHandler constructor.
      * @param Router\RouterInterface $router
+     * @param ParcelTrackingService $parcelTrackingService
      */
-    public function __construct(Router\RouterInterface $router)
+    public function __construct(Router\RouterInterface $router, ParcelTrackingService $parcelTrackingService)
     {
         $this->router = $router;
-        $this->fileParcelTrackingService = new FileParcelTrackingService();
+        $this->parcelTrackingService = $parcelTrackingService;
     }
 
     /**
@@ -40,7 +44,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $pid = $request->getAttribute('parcel_id');
-        list($responseData, $responseCode) = $this->fileParcelTrackingService->getParcelData($pid);
+        list($responseData, $responseCode) = $this->parcelTrackingService->getParcelData($pid);
 
         return new JsonResponse($responseData, $responseCode);
     }
