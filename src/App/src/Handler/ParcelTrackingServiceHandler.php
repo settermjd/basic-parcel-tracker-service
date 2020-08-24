@@ -9,6 +9,7 @@ use Mezzio\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Teapot\StatusCode\RFC\RFC7231 as HttpStatusCodes;
 
 /**
  * Class ParcelTrackingServiceHandler
@@ -52,8 +53,8 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
             $parcelFile = sprintf('%s/%s.json', $dir, $pid);
             list($responseData, $responseCode) = $this->getParcelTrackingFileData($parcelFile, $dir);
         } else {
-            $responseData = $this->getErrorResponseBody(417);
-            $responseCode = 417;
+            $responseData = $this->getErrorResponseBody(HttpStatusCodes::EXPECTATION_FAILED);
+            $responseCode = HttpStatusCodes::EXPECTATION_FAILED;
         }
 
         return new JsonResponse($responseData, $responseCode);
@@ -111,10 +112,10 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     {
         if ($this->parcelTrackingFileIsAccessible($parcelFile)) {
             $responseData = $this->getParcelData($dir);
-            $responseCode = 200;
+            $responseCode = HttpStatusCodes::OK;
         } else {
-            $responseData = $this->getErrorResponseBody(500);
-            $responseCode = 500;
+            $responseData = $this->getErrorResponseBody(HttpStatusCodes::INTERNAL_SERVER_ERROR);
+            $responseCode = HttpStatusCodes::INTERNAL_SERVER_ERROR;
         }
 
         return [
