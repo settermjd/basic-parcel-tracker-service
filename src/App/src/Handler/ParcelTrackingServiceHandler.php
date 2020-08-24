@@ -26,7 +26,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      *
      * @see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
      */
-    private const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
+    public const VALID_PARCEL_ID = '/TN\d{9}[A-Z]{2}/';
 
     /** @var Router\RouterInterface */
     private Router\RouterInterface $router;
@@ -57,7 +57,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
     /**
      * @return array
      */
-    private function getErrorResponseBody($statusCode): array
+    public function getErrorResponseBody($statusCode): array
     {
         switch ($statusCode) {
             case 500:
@@ -83,7 +83,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      * @param string $parcelFile
      * @return string
      */
-    private function getParcelData(string $parcelFile): string
+    public function getParcelData(string $parcelFile): string
     {
         return json_decode(file_get_contents($parcelFile));
     }
@@ -92,7 +92,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      * @param $pid
      * @return bool
      */
-    private function isValidParcelTrackingNumber($pid): bool
+    public function isValidParcelTrackingNumber($pid): bool
     {
         return preg_match(self::VALID_PARCEL_ID, $pid);
     }
@@ -102,7 +102,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      * @param string $dir
      * @return array
      */
-    private function getParcelTrackingFileData(string $parcelFile, string $dir): array
+    public function getParcelTrackingFileData(string $parcelFile, string $dir): array
     {
         if ($this->parcelTrackingFileIsAccessible($parcelFile)) {
             $responseData = $this->getParcelData($dir);
@@ -122,7 +122,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      * @param string $parcelFile
      * @return bool
      */
-    private function parcelTrackingFileIsAccessible(string $parcelFile): bool
+    public function parcelTrackingFileIsAccessible(string $parcelFile): bool
     {
         return file_exists($parcelFile) && is_readable($parcelFile) && filesize($parcelFile);
     }
@@ -132,7 +132,7 @@ class ParcelTrackingServiceHandler implements RequestHandlerInterface
      * @param string $dir
      * @return array
      */
-    private function getParcelTrackingData(string $pid, string $dir): array
+    public function getParcelTrackingData(string $pid, string $dir): array
     {
         if ($this->isValidParcelTrackingNumber($pid)) {
             $parcelFile = sprintf('%s/%s.json', $dir, $pid);
